@@ -89,7 +89,7 @@ const user = () => {
           }}
         >
           <Text style={{ color: "white", fontSize: 16 }}>
-            {params?.name.charAt(0)}
+            {/* {params?.name.charAt(0)} */}
           </Text>
         </View>
         <View>

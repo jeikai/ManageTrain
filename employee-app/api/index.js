@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const moment = require("moment");
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = 8000;
@@ -12,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 mongoose
-  .connect("mongodb+srv://taikhoi:phamtaikhoi123@cluster0.z8uyvbi.mongodb.net/FunCourse", {
+  .connect("mongodb+srv://taikhoi:phamtaikhoi123@cluster0.z8uyvbi.mongodb.net/FunTrain", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -133,6 +134,15 @@ app.post("/trains", async (req, res) => {
   }
 });
 
+app.get("/trains", async (req, res) => {
+  try {
+    const train = await Train.find();
+    res.status(201).json(train);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to add train", error });
+  }
+});
+
 app.put("/trains/:id", async (req, res) => {
   try {
     const train = await Train.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -184,12 +194,35 @@ app.delete("/routes/:id", async (req, res) => {
 app.post("/employees", async (req, res) => {
   try {
     const employee = new Employee(req.body);
+    console.log(req.body)
     await employee.save();
     res.status(201).json(employee);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Failed to add employee", error });
   }
 });
+
+app.post("/employees/login", async (req, res) => {
+  const { phone, password } = req.body;
+  try {
+    const employee = await Employee.findOne({ phone });
+    if (employee) {
+      const isMatch = await bcrypt.compare(password, employee.password);
+      if (isMatch) {
+        res.status(200).json({ success: true, employee });
+      } else {
+        res.status(401).json({ success: false, message: "Invalid phone or password" });
+      }
+    } else {
+      res.status(401).json({ success: false, message: "Invalid phone or password" });
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ success: false, message: "An error occurred during login", error });
+  }
+});
+
 
 app.put("/employees/:id", async (req, res) => {
   try {

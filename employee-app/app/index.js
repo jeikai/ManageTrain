@@ -4,12 +4,10 @@ import { Redirect } from 'expo-router'
 
 const index = () => {
   return (
-   <Redirect href="/(home)"/>
+   <Redirect href="/(login)"/>
   )
 }
 
 export default index
 
 const styles = StyleSheet.create({})
-
-// "/"
