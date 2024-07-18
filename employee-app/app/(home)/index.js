@@ -52,7 +52,7 @@ const Index = () => {
               </View>
               <Text style={styles.buttonText}>Manage Stations</Text>
             </Pressable>
-            <Pressable onPress={() => router.push("/(home)/employees")} style={styles.pressableButton}>
+            <Pressable onPress={() => router.push("/(employee)/")} style={styles.pressableButton}>
               <View style={styles.iconContainer}>
                 <Ionicons name="ios-people-sharp" size={24} color="black" />
               </View>
@@ -61,7 +61,7 @@ const Index = () => {
           </View>
 
           <View style={styles.buttonContainer}>
-            <Pressable onPress={() => router.push("/(home)/customers")} style={styles.pressableButton}>
+            <Pressable onPress={() => router.push("/(customer)")} style={styles.pressableButton}>
               <View style={styles.iconContainer}>
                 <Ionicons name="ios-person" size={24} color="black" />
               </View>

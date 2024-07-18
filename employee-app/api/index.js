@@ -124,6 +124,15 @@ app.post("/customers", async (req, res) => {
   }
 });
 
+app.get("/customers", async (req, res) => {
+  try {
+    const customer = await Customer.find();
+    res.status(201).json(customer);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to add customer", error });
+  }
+});
+
 app.put("/customers/:id", async (req, res) => {
   try {
     const customer = await Customer.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -256,6 +265,23 @@ app.post("/employees/login", async (req, res) => {
   }
 });
 
+app.get("/employees", async (req, res) => {
+  try {
+    const employees = await Employee.find().populate('station');
+    res.status(200).json(employees);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch employees", error });
+  }
+});
+
+app.get("/employees/:id", async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id).populate('station');
+    res.status(200).json(employee);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch employee", error });
+  }
+});
 
 app.put("/employees/:id", async (req, res) => {
   try {

@@ -17,7 +17,6 @@ const EditStation = () => {
 
   const fetchStation = async (stationId) => {
     try {
-        console.log(stationId)
       const response = await axios.get(`${API_URL}stations/${stationId}`);
       setStation(response.data);
     } catch (error) {
