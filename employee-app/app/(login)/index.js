@@ -1,26 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
-import { API_URL} from '@env'
-const index = () => {
+import { API_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const Index = () => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
+  useEffect(() => {
+    const checkUserLoggedIn = async () => {
+      try {
+        const user = await AsyncStorage.getItem('user');
+        if (user) {
+          router.push('/(home)/');
+        }
+      } catch (error) {
+        console.error('Failed to fetch user from AsyncStorage', error);
+      }
+    };
+
+    checkUserLoggedIn();
+  }, []);
+
   const handleLogin = async () => {
     try {
-      const response = await axios.post( API_URL + 'employees/login', {
+      const response = await axios.post(`${API_URL}employees/login`, {
         phone,
         password,
       });
+
       if (response.data.success) {
+        await AsyncStorage.setItem('user', JSON.stringify(response.data.employee));
         router.push('/(home)/');
       } else {
         Alert.alert('Login Failed', 'Invalid phone or password');
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       Alert.alert('Login Error', 'An error occurred while trying to log in');
     }
   };
@@ -56,7 +75,7 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
 
 const styles = StyleSheet.create({
   background: {

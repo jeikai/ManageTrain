@@ -3,42 +3,43 @@ import { StyleSheet, Text, View, FlatList, Pressable, Alert } from 'react-native
 import axios from 'axios';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { API_URL } from '@env'
-const TrainList = () => {
-    const [trains, setTrains] = useState([]);
+import { API_URL } from '@env';
+
+const StationList = () => {
+    const [stations, setStations] = useState([]);
     const router = useRouter();
 
     useEffect(() => {
-        fetchTrains();
+        fetchStations();
     }, []);
 
-    const fetchTrains = async () => {
+    const fetchStations = async () => {
         try {
-            const response = await axios.get(API_URL + 'trains');
-            setTrains(response.data);
+            const response = await axios.get(API_URL + 'stations');
+            setStations(response.data);
         } catch (error) {
-            console.error('Error fetching trains:', error);
+            console.error('Error fetching stations:', error);
         }
     };
 
     const handleEdit = (id) => {
-        router.push(`/(train)/${id}`);
+        router.push(`/(station)/${id}`);
     };
 
     const handleDelete = (id) => {
         Alert.alert(
-            'Delete Train',
-            'Are you sure you want to delete this train?',
+            'Delete Station',
+            'Are you sure you want to delete this station?',
             [
                 { text: 'Cancel', style: 'cancel' },
                 {
                     text: 'Delete',
                     onPress: async () => {
                         try {
-                            await axios.delete(API_URL + `trains/${id}`);
-                            fetchTrains();
+                            await axios.delete(API_URL + `stations/${id}`);
+                            fetchStations();
                         } catch (error) {
-                            console.error('Error deleting train:', error);
+                            console.error('Error deleting station:', error);
                         }
                     },
                 },
@@ -47,13 +48,13 @@ const TrainList = () => {
         );
     };
 
-    const handleCreateNewTrain = () => {
-        router.push('/create-train');
+    const handleCreateNewStation = () => {
+        router.push('/(station)/create-station');
     };
 
     const renderItem = ({ item }) => (
         <View style={styles.itemContainer}>
-            <Text style={styles.itemText}>{item.name} (Capacity: {item.capacity})</Text>
+            <Text style={styles.itemText}>{item.name} ({item.address})</Text>
             <View style={styles.buttonGroup}>
                 <Pressable onPress={() => handleEdit(item._id)} style={styles.editButton}>
                     <Ionicons name="md-create" size={24} color="white" />
@@ -68,19 +69,19 @@ const TrainList = () => {
     return (
         <View style={styles.container}>
             <FlatList
-                data={trains}
+                data={stations}
                 keyExtractor={(item) => item._id}
                 renderItem={renderItem}
                 contentContainerStyle={styles.listContainer}
             />
-            <Pressable onPress={handleCreateNewTrain} style={styles.createButton}>
-                <Text style={styles.createButtonText}>Create New Train</Text>
+            <Pressable onPress={handleCreateNewStation} style={styles.createButton}>
+                <Text style={styles.createButtonText}>Create New Station</Text>
             </Pressable>
         </View>
     );
 };
 
-export default TrainList;
+export default StationList;
 
 const styles = StyleSheet.create({
     container: {
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     itemContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center', 
+        alignItems: 'center',
         backgroundColor: '#ffffff',
         padding: 15,
         marginVertical: 8,

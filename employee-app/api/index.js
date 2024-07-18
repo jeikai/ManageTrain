@@ -76,6 +76,25 @@ app.post("/stations", async (req, res) => {
   }
 });
 
+app.get("/stations", async (req, res) => {
+  try {
+    const station = await Station.find();
+    res.status(201).json(station);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to get station", error });
+  }
+});
+
+app.get("/stations/:id", async (req, res) => {
+  try {
+    console.log(req.params.id)
+    const station = await Station.findById(req.params.id);
+    res.status(201).json(station);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to get station", error });
+  }
+});
+
 app.put("/stations/:id", async (req, res) => {
   try {
     const station = await Station.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -142,6 +161,20 @@ app.get("/trains", async (req, res) => {
     res.status(500).json({ message: "Failed to add train", error });
   }
 });
+
+app.get("/trains/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const train = await Train.findById(id);
+    if (!train) {
+      return res.status(404).json({ message: "Train not found" });
+    }
+    res.status(200).json(train);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch train", error });
+  }
+});
+
 
 app.put("/trains/:id", async (req, res) => {
   try {

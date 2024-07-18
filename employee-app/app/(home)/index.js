@@ -1,11 +1,21 @@
 import { StyleSheet, Text, View, ScrollView, Pressable, StatusBar } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { Feather, Entypo, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const index = () => {
+const Index = () => {
   const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+      router.push("/(login)");
+    } catch (error) {
+      console.error('Failed to remove user from AsyncStorage', error);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -15,7 +25,9 @@ const index = () => {
           <View style={styles.header}>
             <Feather name="bar-chart" size={24} color="black" />
             <Text style={styles.headerText}>Train Management System</Text>
-            <Entypo name="lock" size={24} color="black" />
+            <Pressable onPress={handleLogout}>
+              <Text style={styles.logoutText}>Log Out</Text>
+            </Pressable>
           </View>
 
           <View style={styles.buttonContainer}>
@@ -34,7 +46,7 @@ const index = () => {
           </View>
 
           <View style={styles.buttonContainer}>
-            <Pressable onPress={() => router.push("/(home)/stations")} style={styles.pressableButton}>
+            <Pressable onPress={() => router.push("/(station)/")} style={styles.pressableButton}>
               <View style={styles.iconContainer}>
                 <Ionicons name="ios-business" size={24} color="black" />
               </View>
@@ -62,7 +74,7 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
 
 const styles = StyleSheet.create({
   gradient: {
@@ -80,6 +92,10 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 16,
+    fontWeight: "600",
+  },
+  logoutText: {
+    color: 'red',
     fontWeight: "600",
   },
   buttonContainer: {
